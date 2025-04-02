@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Booking UI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: #D6DCE5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+            position: relative;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            overflow-y: hidden;
+            max-width: 100%;
+        }
+
+        .top-left-image {
+            position: absolute;
+            top: 0;
+            left: 4%;
+            width: 125px;
+            height: 250px;
+        }
+
+        .center-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: auto;
+            height: auto;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .container {
+            width: 300px;
+            margin-left: 2%;
+            margin-top: 35%;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .container h5 {
+            color: #333;
+        }
+
+        .timer-box {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .timer-box div {
+            background: #b2bec3;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 50px;
+        }
+
+        .cart-box {
+            position: relative;
+            background: url('Team.jpg') center/cover;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            /* Initially hidden */
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .cart-box:hover .background-video {
+            opacity: 1;
+            /* Show video on hover */
+        }
+
+
+        .cart-box span {
+            display: none;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-box:hover span {
+            display: flex;
+        }
+
+        .cart-box span {
+            display: none !important;
+        }
+
+        .cart-box:hover span {
+            display: flex !important;
+        }
+
+        .cart-box i {
+            font-size: 24px;
+        }
+
+        .carousel-indicators {
+            position: relative;
+            margin-right: 17%;
+        }
+
+        .carousel-indicators button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: gray;
+            border: none;
+            margin: 0 5px;
+        }
+
+        .carousel-indicators .active {
+            background-color: black;
+        }
+
+        /* Social Media Icons */
+        .social-icons {
+            position: absolute;
+            top: 10px;
+            right: 50px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons i {
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .social-icons i:hover {
+            color: #007bff;
+        }
+
+        .btn-secondary:hover {
+            background-color: red;
+
+        }
+
+        /* Adjusted CSS for the social icons as inline buttons with small size */
+        .btn-group {
+            position: absolute;
+            right: 200px;
+            top: 80%;
+            transform: translateY(-50%);
+            display: inline-flex;
+            gap: 10px;
+        }
+
+        .small-btn {
+            font-size: 20px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .small-btn:hover {
+            background-color: #007bff;
+        }
+
+
+        .about-section {
+            width: 40%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 900px;
+            bottom: 60%;
+        }
+
+        .subheadings {
+            display: flex;
+            gap: 20px;
+        }
+
+        .subheadings div {
+            cursor: pointer;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .subheadings div.active {
+            border-bottom: 2px solid white;
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+            position: relative;
+        }
+
+        .passages {
+            height: 200px;
+            overflow-y: auto;
+            width: 60%;
+            margin-top: 10px;
+            padding-right: 20px;
+            position: relative;
+        }
+
+        .passage {
+            display: none;
+        }
+
+        .passage.active {
+            display: block;
+        }
+
+        .line-container {
+            position: relative;
+            height: 200px;
+            width: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .vertical-line {
+            width: 4px;
+            height: 100%;
+            background: white;
+            position: absolute;
+        }
+
+        .circle {
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .passages {
+            scrollbar-width: none;
+            /* Hides scrollbar in Firefox */
+            -ms-overflow-style: none;
+            /* Hides scrollbar in IE/Edge */
+        }
+
+        .passages::-webkit-scrollbar {
+            display: none;
+            /* Hides scrollbar in Chrome, Safari */
+        }
+    </style>
+</head>
+
+<body>
+    <img src="11.jpg" alt="Top Image" class="top-left-image">
+    <!-- Center Image Container -->
+    <img src="11-removebg-preview.png" alt="Center Image" class="center-image" id="centerImage">
+    <!-- Default Center Image -->
+
+    <div class="container">
+        <h5>GET TICKETS</h5>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Enter your ZIP code">
+            <button class="btn btn-secondary">&#8594;</button>
+        </div>
+        <div class="timer-box">
+            <div><span id="days">00</span><br>Days</div>
+            <div><span id="hours">00</span><br>Hours</div>
+            <div><span id="minutes">00</span><br>Min</div>
+            <div><span id="seconds">00</span><br>Sec</div>
+        </div>
+        <div class="cart-box" id="cartBox">
+            <video autoplay loop muted playsinline class="background-video">
+                <source src="1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <span>WATCH THE TRAILER <i class="bi bi-arrow-right"></i></span>
+        </div>
+
+    </div>
+
+    <div class="carousel-indicators">
+        <button class="active" onclick="changeSlide(0)"></button>
+        <button onclick="changeSlide(1)"></button>
+        <button onclick="changeSlide(2)"></button>
+        <button onclick="changeSlide(3)"></button>
+    </div>
+
+    <!-- Social Media Icons -->
+    <div class="social-icons">
+        <i class="bi bi-facebook"></i>
+        <i class="bi bi-twitter"></i>
+        <i class="bi bi-youtube"></i>
+        <i class="bi bi-instagram"></i>
+    </div>
+
+    <!-- Social Media Icons and Slide Control Buttons -->
+    <div class="btn-group">
+        <i class="bi bi-chevron-left small-btn" id="leftBtn"></i>
+        <i class="bi bi-chevron-right small-btn" id="rightBtn"></i>
+    </div>
+
+    <div class="about-section">
+        <h3>ABOUT THE FILM</h3>
+        <div class="subheadings">
+            <div class="tab active" onclick="changeTab(0)">STORY</div>
+            <div class="tab" onclick="changeTab(1)">CAST</div>
+            <div class="tab" onclick="changeTab(2)">CREW</div>
+        </div>
+        <div class="content-wrapper">
+            <div class="passages" id="passages">
+                <div class="passage active" id="story">Story: The story follows an adventurous journey of a young hero
+                    who discovers his hidden potential. Through trials and tribulations, he overcomes obstacles and
+                    emerges victorious, teaching us the true essence of perseverance and courage. The story unfolds with
+                    dramatic twists and turns, keeping the audience engaged from beginning to end. The protagonist's
+                    growth is evident as he navigates the complexities of his world, forming deep bonds and facing
+                    unexpected challenges. In the climax, he achieves what seemed impossible, leaving a lasting impact
+                    on those around him. More lines are added to extend the passage.</div>
+                <div class="passage" id="cast">Cast: The film features a talented ensemble cast, bringing characters to
+                    life with exceptional performances. Each actor contributes to the depth and emotion of the
+                    narrative, making the story more engaging and memorable. The protagonist's journey is enhanced by
+                    the strong supporting roles that add complexity and richness to the plot. More lines are added to
+                    extend the passage.</div>
+                <div class="passage" id="crew">Crew: Behind the scenes, a dedicated team of directors, producers,
+                    writers, and technical experts work tirelessly to create a cinematic masterpiece. Their combined
+                    efforts in cinematography, sound design, and special effects make the film a visual and auditory
+                    delight. Their passion and commitment to storytelling shine through every frame. More lines are
+                    added to extend the passage.</div>
+            </div>
+            <div class="line-container">
+                <div class="vertical-line"></div>
+                <div class="circle" id="circle"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Countdown timer function
+        function countdown() {
+            let countDate = new Date().getTime() + (16 * 24 * 60 * 60 * 1000);
+            setInterval(() => {
+                let now = new Date().getTime();
+                let gap = countDate - now;
+                let d = Math.floor(gap / (1000 * 60 * 60 * 24));
+                let h = Math.floor((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let m = Math.floor((gap % (1000 * 60 * 60)) / (1000 * 60));
+                let s = Math.floor((gap % (1000 * 60)) / 1000);
+                document.getElementById("days").innerText = d;
+                document.getElementById("hours").innerText = h;
+                document.getElementById("minutes").innerText = m;
+                document.getElementById("seconds").innerText = s;
+            }, 1000);
+        }
+        countdown();
+
+        // Array to hold image sources and their corresponding sizes
+        let centerImages = [
+            { src: '1 (1).png', width: '200px', height: '400px' },
+            { src: '1 (2).png', width: '300px', height: '400px' },
+            { src: '1 (3).png', width: '300px', height: '400px' },
+            { src: '1 (4).png', width: '200px', height: '400px' }
+        ];
+
+        let currentIndex = 0;  // Index to track the current center image
+
+        // Function to update the center image and its size
+        function updateCenterImage() {
+            const centerImage = document.getElementById("centerImage");
+            centerImage.src = centerImages[currentIndex].src;
+            centerImage.style.width = centerImages[currentIndex].width;
+            centerImage.style.height = centerImages[currentIndex].height;
+        }
+
+        // Function to change the active state of the carousel indicators
+        function updateIndicators() {
+            document.querySelectorAll('.carousel-indicators button').forEach((btn, idx) => {
+                btn.classList.remove('active');
+                if (idx === currentIndex) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Function to change the slide when an indicator button is clicked
+        function changeSlide(index) {
+            currentIndex = index;
+            updateCenterImage();  // Update the image
+            updateIndicators();   // Update the active indicator
+        }
+
+        // Event listeners for left and right buttons for image change
+        document.getElementById('rightBtn').addEventListener('click', function () {
+            currentIndex = (currentIndex + 1) % centerImages.length;  // Loop to the next image
+            updateCenterImage();  // Update the image
+            updateIndicators();   // Update the active indicator
+        });
+
+        document.getElementById('leftBtn').addEventListener('click', function () {
+            currentIndex = (currentIndex - 1 + centerImages.length) % centerImages.length;  // Loop to the previous image
+            updateCenterImage();  // Update the image
+            updateIndicators();   // Update the active indicator
+        });
+
+        // Initialize the slideshow by updating the center image and the active indicator
+        updateCenterImage();
+        updateIndicators();
+
+        // Tab switching and passage scrolling with moving circle
+        function changeTab(index) {
+            document.querySelectorAll('.tab').forEach((tab, idx) => {
+                tab.classList.toggle('active', idx === index);
+            });
+            document.querySelectorAll('.passage').forEach((passage, idx) => {
+                passage.classList.toggle('active', idx === index);
+            });
+            document.getElementById('passages').scrollTop = 0;
+            moveCircle(0);
+        }
+
+        function moveCircle(scrollPos) {
+            const passages = document.getElementById('passages');
+            const maxScroll = passages.scrollHeight - passages.clientHeight;
+            const percentage = scrollPos / maxScroll;
+            const moveDistance = percentage * (passages.clientHeight - 15);
+            document.getElementById('circle').style.transform = `translateY(${moveDistance}px)`;
+        }
+
+        document.getElementById('passages').addEventListener('scroll', function () {
+            moveCircle(this.scrollTop);
+        });
+
+    </script>
+
+
+
+</body>
+
+</html>
